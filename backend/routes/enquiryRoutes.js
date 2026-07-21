@@ -1,12 +1,11 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
   createEnquiry,
   getEnquiries,
   deleteEnquiry,
-  updateEnquiryStatus
+  updateEnquiryStatus,
 } = require("../controllers/enquiryController");
 
 router.post("/", createEnquiry);
