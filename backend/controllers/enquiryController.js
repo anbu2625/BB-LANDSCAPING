@@ -8,7 +8,13 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
-
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("Mail Error:", error);
+  } else {
+    console.log("Mail Server Ready");
+  }
+});
 // Create Enquiry
 exports.createEnquiry = async (req, res) => {
   try {
