@@ -1,10 +1,47 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import api from "../services/api";
 
 function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await api.post("/enquiries", formData);
+
+      alert("Enquiry submitted successfully!");
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+
+      console.log(res.data);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit enquiry");
+    }
+  };
+
   return (
     <>
-      {/* Contact Section */}
       <section
         id="contact"
         className="py-20 bg-gradient-to-r from-green-900 via-green-800 to-green-700 text-white"
@@ -26,7 +63,6 @@ function Contact() {
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-10">
-            {/* Contact Details */}
             <motion.div
               initial={{ opacity: 0, x: -80 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -82,7 +118,6 @@ function Contact() {
               </div>
             </motion.div>
 
-            {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: 80 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -93,28 +128,44 @@ function Contact() {
                 Send Enquiry
               </h3>
 
-              <form id="quote-form" className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="Your Name"
+                  required
                   className="w-full p-4 rounded-xl border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-green-600"
                 />
 
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="Your Email"
+                  required
                   className="w-full p-4 rounded-xl border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-green-600"
                 />
 
                 <input
                   type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                   placeholder="Phone Number"
+                  required
                   className="w-full p-4 rounded-xl border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-green-600"
                 />
 
                 <textarea
                   rows="5"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Tell us about your landscaping requirement..."
+                  required
                   className="w-full p-4 rounded-xl border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-green-600"
                 ></textarea>
 
@@ -126,43 +177,6 @@ function Contact() {
                 </button>
               </form>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-black via-gray-900 to-black">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-bold text-white mb-6"
-          >
-            Ready to Transform Your Outdoor Space?
-          </motion.h2>
-
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
-            From garden design to complete landscape maintenance,
-            BB Landscaping creates beautiful outdoor environments
-            across Tirunelveli and Tamil Nadu.
-          </p>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-5">
-            <a
-              href="tel:09443472670"
-              className="bg-white text-black px-8 py-4 rounded-xl font-bold hover:scale-105 transition duration-300"
-            >
-              📞 Call Now
-            </a>
-
-            <a
-              href="https://wa.me/919443472670"
-              target="_blank"
-              rel="noreferrer"
-              className="bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-500 transition duration-300"
-            >
-              💬 WhatsApp Us
-            </a>
           </div>
         </div>
       </section>
