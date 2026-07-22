@@ -2,12 +2,18 @@ const Enquiry = require("../models/Enquiry");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
+
 transporter.verify(function (error, success) {
   if (error) {
     console.log("Mail Error:", error);
@@ -15,6 +21,7 @@ transporter.verify(function (error, success) {
     console.log("Mail Server Ready");
   }
 });
+
 // Create Enquiry
 exports.createEnquiry = async (req, res) => {
   try {
