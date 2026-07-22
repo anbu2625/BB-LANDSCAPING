@@ -1,68 +1,13 @@
 const Enquiry = require("../models/Enquiry");
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("Mail Error:", error);
-  } else {
-    console.log("Mail Server Ready");
-  }
-});
 
 // Create Enquiry
 exports.createEnquiry = async (req, res) => {
   try {
-    console.log("EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
     console.log("Enquiry Received:", req.body);
 
     const enquiry = await Enquiry.create(req.body);
 
-    // User Mail
-    if (enquiry.email) {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: enquiry.email,
-        subject: "BB Landscaping - Enquiry Received",
-        html: `
-          <h2>Thank You for Contacting BB Landscaping</h2>
-          <p>Hello ${enquiry.name},</p>
-          <p>We have received your enquiry successfully.</p>
-          <p>Our team will contact you shortly.</p>
-        `,
-      });
-
-      console.log("User email sent");
-    }
-
-    // Admin Mail
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL,
-      subject: "New Enquiry Received - BB Landscaping",
-      html: `
-        <h2>New Enquiry Received</h2>
-        <p><strong>Name:</strong> ${enquiry.name}</p>
-        <p><strong>Email:</strong> ${enquiry.email}</p>
-        <p><strong>Phone:</strong> ${enquiry.phone}</p>
-        <p><strong>Message:</strong> ${enquiry.message}</p>
-      `,
-    });
-
-    console.log("Admin email sent");
+    console.log("Enquiry saved successfully");
 
     res.status(201).json({
       success: true,
